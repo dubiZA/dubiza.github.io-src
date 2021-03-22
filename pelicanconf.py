@@ -19,8 +19,12 @@ DEFAULT_METADATA = {
 
 FILENAME_METADATA = '(?P<title>.*)'
 
-STATIC_PATHS = ['images', 'extra/CNAME']
-EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
+STATIC_PATHS = ['images', 'extra/robots.txt', 'extra/favicon.ico', 'extra/CNAME']
+EXTRA_PATH_METADATA = {
+    'extra/robots.txt': {'path': 'robots.txt'},
+    'extra/favicon.ico': {'path': 'favicon.ico'},
+    'extra/CNAME': {'path': 'CNAME'},
+}
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
