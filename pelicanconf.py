@@ -19,7 +19,7 @@ DEFAULT_METADATA = {
 
 FILENAME_METADATA = '(?P<title>.*)'
 
-STATIC_PATHS = ['images', 'extra/robots.txt', 'extra/favicon.ico', 'extra/CNAME']
+STATIC_PATHS = ['images/', 'extra/robots.txt', 'extra/favicon.ico', 'extra/CNAME']
 EXTRA_PATH_METADATA = {
     'extra/robots.txt': {'path': 'robots.txt'},
     'extra/favicon.ico': {'path': 'favicon.ico'},
