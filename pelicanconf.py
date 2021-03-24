@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*- #
 
 AUTHOR = 'Darius'
-SITENAME = 'dariushall.com'
-SITEURL = ''
+SITENAME = 'Darius Hall'
+SITEURL = 'http://localhost:8000/'
 
 PATH = 'content'
 
@@ -25,6 +25,35 @@ EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
     'extra/CNAME': {'path': 'CNAME'},
 }
+
+PLUGIN_PATHS = ['./pelican-plugins']
+PLUGINS = ['sitemap', 'feed_summary']
+
+# Theme config
+THEME = 'themes/Flex'
+SITELOGO = '/images/profile.jpg'
+SITETITLE = 'Darius Hall'
+SITESUBTITLE = 'My piece of the Internet'
+
+SITEMAP = {
+    'format': 'xml',
+    'priorities': {
+        'articles': 0.6,
+        'indexes': 0.6,
+        'pages': 0.5,
+    },
+    'changefreqs': {
+        'articles': 'monthly',
+        'indexes': 'daily',
+        'pages': 'monthly',
+    }
+}
+
+MAIN_MENU = True
+MENUITEMS = (
+    ('Categories', '/categories'),
+    ('Tags', '/tags')
+)
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
