@@ -11,7 +11,7 @@ SITEDESCRIPTION = 'The epic chronicles of Darius\' forays in to tech, coding and
 SITELOGO = '/images/profile.jpg'
 FAVICON = '/images/favicon.ico'
 BROWSER_COLOR = '#333'
-PYGMENTS_STYLE = 'monokai'
+# PYGMENTS_STYLE = 'monokai'
 
 ROBOTS = 'index, follow'
 
@@ -114,8 +114,7 @@ USE_FOLDER_AS_CATEGORY = True
 # Blogroll
 LINKS = (
     ('AWS', '/category/aws'),
-    ('Pelican', 'https://getpelican.com/'),
-    ('Jinja2', 'https://palletsprojects.com/p/jinja/'),
+    ('Other', '/category/other'),
 )
 
 # Uncomment following line if you want document-relative URLs when developing

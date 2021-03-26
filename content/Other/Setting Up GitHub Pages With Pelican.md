@@ -1,3 +1,5 @@
+Tags: python, pelican, github, reference
+Status: published
 
 Over the last few days I have been trying to figure out how I want to go about chronicling my... accomplishments? I figured, if I'm going to spend time learning something, I should also invest some time documenting what I have learned for three reasons (in no particular order):
 
@@ -5,7 +7,7 @@ Over the last few days I have been trying to figure out how I want to go about c
 - With the hopes that it proves useful to someone out there in comming days
 - The stuff I've worked on stays in my head as a result of "writing it down" so to speak
 
-Setting up this site with GitHub Pages using Pelican (the Python based static site generator) and fronting it with Cloudflare's free tier CDN was enough of a challenge that it seems like a fantastic place to start writing. So, let's get started!
+Setting up this site with GitHub Pages using Pelican (the Python based static site generator) was enough of a challenge that it seems like a fantastic place to start writing. So, let's get started!
 
 ![pelican]({static}/images/birger-strahl-3FDMW9XoNXU-unsplash.jpg)
 Photo by [Birger Strahl][1] on [Unsplash][2]  
@@ -125,9 +127,113 @@ Pelican will present a series of questions to help in setting up the base config
 The options you'll need to change from default are the `Do you want to upload your website using GitHub Pages?` and `Is this your personal page (username.github.io)?` Make sure to change those to `Y`.
 
 ## Configuring Pelican
+Having completed the `pelican-quickstart`, you'll have a pretty good initial baseline to build up from. Most of the initial "building up" is done in the pelican configuration files `pelicanconf.py` and `publishconf.py`. Some additional configuration will be done through updating the default directory structure as well.
 
+### Config Files
+- `pelicanconf.py` is the configuration file Pelican uses when building/publishing and running things locally. The settings defined here are also imported in to the `publishconf.py` file, so it's a good place to configure as many settings as possible that aren't dependant on the final published "product".
+- `publishconf.py`, as mentioned above, imports the `pelicanconf.py` configurations and allows you to overide anything that needs to be changed for the live version of the site. And example would be the `SITEURL` setting, which you'll defenitely want different between to two files - don't worry, the quickstart will have taken care of that one for you!
+
+Open `publishconf.py` and add the following line:
+
+    :::python
+    DELETE_OUTPUT_DIRECTORY = False
+
+This is very important - when the publish command is issued, Pelican will try clean up after itself by default. But with the way we have things set up, that would eliminate our submodule and make life difficult every time we publish.
+
+At this point, you probably don't need to mess around with `pelicanconf.py` too much. Most of the defaults will work for the purposes of this writeup. The Pelican docs have tons of information about [available settings](https://docs.getpelican.com/en/latest/settings.html "Pelican Settings").
+
+There are a few addtions that we'll make here though. Add the following lines to `pelicanconf.py`:
+
+    :::python
+    STATIC_PATHS = ['images/', 'extra/CNAME']
+    EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
+
+The above lines will set things up to help Pelican find the images directory and get things ready to use a custom domain name. **NOTE:** If you are not planning to use a custom domain, I believe the CNAME entries are unnecessary.
+
+The next setting I use to avoid publishing an incomplete article prematurely is:
+
+    :::python
+    DEFAULT_METADATA = { 'status': 'draft', }
+
+This will place generated pages for an article in `SITEURL/drafts/article_name.html`. Once a post is complete, the `Status: published` page "front matter" or page meta will tell Pelican it's ready to go live. 
+
+### Test Post
+At this point, it seems like it's time for a first post test. Create a new file in the `content` directory called `first-post.md`. Yes, Pelican uses Markdown (or reStructured Text) for page authoring. For a reference, see [markdownguide.org](https://www.markdownguide.org/basic-syntax "Markdown Reference")
+
+    :::markdown
+    Title: First Post
+    Date: 2021-01-01 15:00
+    Category: Other
+    Tags: tag1, tag2, tag3
+    Slug: first-post
+    Author: Your Name
+    Summary: Summary of your blog post.
+
+    Start your first blog post here.
+    Lorem Ipsum
+    etc...
+
+There are ways to avoid using some (or even any of) the meta data. Take a look at Pelican docs for details.
+
+With the page written up, it can be test published by using the commands:
+
+    :::zsh
+    make html && make devserver
+
+If you system is not set up for `make`, you can also run:
+
+    :::python
+    pelican content -o output -s pelicanconf.py
+    pelican -r -l --ignore-cache
+
+Either way you choose to generate the local instance, it will start up a local webserver listening at `localhost:8000`. Navigate there with your favorite browser. If I have guided you correctly up to this point, you should have a functioning dev instance of you new site. If things are broken, well... I'm sorry. But you favorite search engine is your friend :D.
+
+## Publishing to GitHub
+Once you are satisfied with you post, we'll need to move from draft to publish, then publish and push all those changes to GitHub. Make sure to add the meta `Status: published` to the post.
+
+    :::markdown
+    Title: First Post
+    Date: 2021-01-01 15:00
+    Category: Other
+    Tags: tag1, tag2, tag3
+    Slug: first-post
+    Author: Your Name
+    Summary: Summary of your blog post.
+    Status: published
+
+    Start your first blog post here.
+    Lorem Ipsum
+    etc...
+
+Next, publish the page using `make` or the `pelican` command:
+
+    :::zsh
+    make publish
+
+Or
+
+    :::zsh
+    pelican content -o output -s publishconf.py
+
+Then go through the `git` workflow. This is all assuming you are in the root of the `ghpages/` directory, as with all the other commands in this article. You will need to follow the git flow twice, first in the `output/` directory or submodule, then in the `ghpages` root directory.
+
+Before running the git workflow, add `*.pyc` to your `.gitignore` file
+
+    :::zsh
+    cd output
+    git add .
+    git commit -m 'commit message'
+    git push
+
+    cd ..
+    git add .
+    git commit -m 'commit message'
+    git push
+
+Within a few moments, you should be able to visit https://username.github.io with your site live. Now for setting up the custom domain.
 
 # Setting Up a Custom Domain
+I'm not going to go over setting up DNS with your domain registrar. That really depends on who your registrar is and there are far too many of those. The [GitHub Pages docs][6] have some guidance here. The GHP docs cover the GitHub config, but I'll mention it here briefly too.
+[6]: <https://docs.github.com/en/github/working-with-github-pages/configuring-a-custom-domain-for-your-github-pages-site> "GitHub Pages Custom Domains"
 
-
-# Fonting GitHub Pages with Cloudflare CDN
+Go to the `username.github.io` repo > settings > GitHub Pages section. Add your registered domain name in the field and hit save. GHP supports several types of domain: www.domain.com, custom subdomain (like blog.domain.com), apex domain like domain.com.
